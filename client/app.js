@@ -22,8 +22,26 @@ function login(event) {
     messagesSection.classList.add('show');
     messageAuthor.innerHTML = userName;
   } else {
-    alert('Please enter your name to join');
+    alert('Name field is empty!');
   }
 }
 
+function sendMessage(event) {
+  event.preventDefault();
+
+  let message = messageContentInput.value;
+
+  if (message) {
+    addMessage(userName, message)
+    messageContentInput.value= '';
+  } else {
+    alert('Message field is empty!');
+  }
+}
+
+function addMessage(author, message) {
+  console.log('addMessage:', author, message);
+}
+
 loginForm.addEventListener('submit', login);
+addMessageForm.addEventListener('submit', sendMessage);
