@@ -41,8 +41,10 @@
     </section>
 
   </main>
-  <script src='app.js'></script>
-  <!-- <script src='app.js' type='module'></script> -->
+  <!--! 'Uncaught ReferenceError: io is not defined' = means that func is 'used' before it is created'. Now 'io' is created before it is used -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <!--or <script src='app.js'></script> -->
+  <script src='app.js' type='module'></script>
 </body>
 
 </html>

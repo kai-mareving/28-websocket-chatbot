@@ -11,6 +11,13 @@ const loginForm = document.getElementById('welcome-form'),
 
 let userName;
 
+const socket = io();
+
+//@ socket('event-name', func-to-call)
+//or socket.on('message', (event) => addMessage(event.author, event.content))
+//@ Destructurised:
+socket.on('message', ({ author, content }) => addMessage(author, content));
+
 /* ACTIONS */
 function login(event) {
   event.preventDefault();
@@ -29,11 +36,13 @@ function sendMessage(event) {
 
   let msgContent = messageContentInput.value;
 
-  if (msgContent) {
-    addMessage(userName, msgContent);
-    messageContentInput.value = '';
-  } else {
+  if (!msgContent.length) {
     alert('Message field is empty!');
+  } else {
+    addMessage(userName, msgContent);
+    //@ socket.emit('event-name', possible-data);
+    socket.emit('message', { author: userName, content: msgContent });
+    messageContentInput.value = '';
   }
 }
 
