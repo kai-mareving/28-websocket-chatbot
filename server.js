@@ -1,11 +1,10 @@
 const express = require('express');
 const path = require('path');
+const app = express();
 const socket = require('socket.io');
 
-const app = express();
-
 const messages = [];
-let users = [];
+const users = [];
 
 app.use(express.static(path.join(__dirname, '/client')));
 
@@ -26,22 +25,28 @@ const io = socket(server);
 
 io.on('connection', (socket) => {
   console.log('New client with ID: ', socket.id);
+
+  socket.on('join', (login) => {
+    users.push({ name: login, id: socket.id });
+    console.log('on join: ', users);
+    socket.broadcast.emit('message', { author: 'Chat Bot', content: `${login} joined the chat` });
+  });
+
   socket.on('message', (message) => {
-    let user = {};
     console.log('I\'ve got a message from ' + socket.id);
-    user.name = message.author;
-    user.id = socket.id;
-    if (users.some(user => user.id === socket.id)) {
-      console.log('users already contains this id');
-    } else {
-      users.push(user);
-    }
     messages.push(message);
     socket.broadcast.emit('message', message);
   });
+
+  console.log('I\'ve added a listener on message event \n');
+
   socket.on('disconnect', () => {
     console.log('Oh, socket ' + socket.id + ' has left');
-    users = users.filter(user => user.id !== socket.id);
+    const user = users.find(person => person.id === socket.id);
+    const index = users.indexOf(user);
+    users.splice(index, 1);
+    socket.broadcast.emit('message', { author: 'Chat Bot', content: `${user.name} left the chat` });
+    console.log('on leave: ', users);
   });
-  console.log('I\'ve added a listener on message event \n');
+
 });

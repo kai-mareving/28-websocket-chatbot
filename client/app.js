@@ -26,6 +26,7 @@ function login(event) {
     userName = userNameInput.value;
     loginForm.classList.remove('show');
     messagesSection.classList.add('show');
+    socket.emit('join', userName);
   } else {
     alert('Name field is empty!');
   }
@@ -52,6 +53,7 @@ function addMessage(author, msgContent) {
   message.classList.add('message--received');
 
   if (author === userName) message.classList.add('message--self');
+  if (author === 'Chat Bot') message.classList.add('message--chatbot');
 
   message.innerHTML = `
     <h3 class='message__author'>${userName === author ? 'You' : author}</h3>
